@@ -1,42 +1,46 @@
-import { Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useEffect, Suspense } from 'react';
+import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import './App.css'
 
-function Model() {
-  // const group = useRef();
-  const { scene } = useGLTF('704_01.glb'); // Replace with your GLB model path
+THREE.ColorManagement.legacyMode = false;
 
-  // Set up rotating animation
-  // useFrame(() => {
-  //   group.current.rotation.y += 0.01; // Adjust rotation speed as needed
-  // });
+function Model({ modelUrl, textureUrl, materialColor }) {
+  // const group = useRef();
+  const { scene, materials } = useGLTF(modelUrl);
+  const texture = useLoader(THREE.TextureLoader, textureUrl);
+
+  useEffect(() => {
+    texture.encoding = THREE.sRGBEncoding;
+    
+    Object.values(materials).forEach((material) => {
+      if (material.map) {
+        material.map = texture;
+        material.map.encoding = THREE.sRGBEncoding;
+        material.color = new THREE.Color(materialColor); // Apply the color to the material
+        material.needsUpdate = true;
+      }
+    });
+  }, [materials, texture, materialColor]);
 
   return <primitive object={scene} />;
 }
 
-// function Scene() {
-//   const colorMap = useLoader(TextureLoader, '704_01-.webp');
-//   return (
-//     <>
-//       <ambientLight intensity={0.2} />
-//       <directionalLight />
-//       <mesh>
-//         <sphereGeometry args={[1, 32, 32]} />
-//         <meshStandardMaterial map={colorMap} />
-//       </mesh>
-//     </>
-//   )
-// }
-
 function App() {
   return (
-    <Canvas shadows camera={{ position: [0, 0, 0.4], fov: 45 }}>
+    <Canvas 
+      gl={{
+        outputEncoding: THREE.sRGBEncoding,
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: 1.0,
+      }}
+      camera={{ position: [0, 0, 0.4], fov: 45 }}>
       <ambientLight />
       <pointLight position={[10, 10, 10]}/>
-      <directionalLight  color={0xffffff} intensity={Math.PI * 1.5} castShadow/>
+      <directionalLight intensity={Math.PI * 1.5} castShadow/>
       <Suspense fallback={null}>
-        <Model />
+        <Model modelUrl='704_01.glb' textureUrl='704_01-.webp' materialColor=''/>
       </Suspense>
       <OrbitControls />
     </Canvas>
@@ -44,3 +48,6 @@ function App() {
 }
 
 export default App;
+
+
+
