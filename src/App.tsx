@@ -7,7 +7,7 @@ import './App.css'
 THREE.ColorManagement.legacyMode = false;
 
 function Model({ modelUrl, textureUrl, materialColor }) {
-  // const group = useRef();
+
   const { scene, materials } = useGLTF(modelUrl);
   const texture = useLoader(THREE.TextureLoader, textureUrl);
 
@@ -18,7 +18,7 @@ function Model({ modelUrl, textureUrl, materialColor }) {
       if (material.map) {
         material.map = texture;
         material.map.encoding = THREE.sRGBEncoding;
-        material.color = new THREE.Color(materialColor); // Apply the color to the material
+        material.color = new THREE.Color(materialColor);
         material.needsUpdate = true;
       }
     });
