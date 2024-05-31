@@ -6,7 +6,7 @@ import './App.css'
 
 THREE.ColorManagement.legacyMode = false;
 
-function Model({ modelUrl, textureUrl, materialColor }) {
+function Model({ modelUrl, textureUrl }) {
 
   const { scene, materials } = useGLTF(modelUrl);
   const texture = useLoader(THREE.TextureLoader, textureUrl);
@@ -18,11 +18,10 @@ function Model({ modelUrl, textureUrl, materialColor }) {
       if (material.map) {
         material.map = texture;
         material.map.encoding = THREE.sRGBEncoding;
-        material.color = new THREE.Color(materialColor);
         material.needsUpdate = true;
       }
     });
-  }, [materials, texture, materialColor]);
+  }, [materials, texture]);
 
   return <primitive object={scene} />;
 }
@@ -40,7 +39,7 @@ function App() {
       <pointLight position={[10, 10, 10]}/>
       <directionalLight intensity={Math.PI * 1.5} castShadow/>
       <Suspense fallback={null}>
-        <Model modelUrl='704_01.glb' textureUrl='704_01-.webp' materialColor=''/>
+        <Model modelUrl='704_01.glb' textureUrl='704_01-.webp'/>
       </Suspense>
       <OrbitControls />
     </Canvas>
