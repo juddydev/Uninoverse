@@ -1,6 +1,6 @@
 # React Three Fiber
 
-This is 3D model using react three fiber
+This is 3D model viewer using react three fiber
 
 ## Install
 Copy the scene.gltf to public folder
