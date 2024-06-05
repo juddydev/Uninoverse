@@ -1,44 +1,57 @@
 import * as THREE from 'three';
-import { Suspense, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF } from '@react-three/drei';
-import './App.css'
+import { OrbitControls } from '@react-three/drei';
+import ModelComponent from './components/ModelComponent';
+import TextureComponent from './components/TextureComponent';
+import DownloadComponent from './components/DownloadComponent';
+import './App.css';
 
-function Model({ modelUrl }) {
-  const group = useRef();
-  const { nodes, materials } = useGLTF(modelUrl);
-  console.log(nodes)
-  console.log(materials)
-  return (
-    <group ref={group} {...props} dispose={null}>
-      <mesh castShadow receiveShadow geometry={nodes.shoe.geometry} material={materials.laces} />
-      <mesh castShadow receiveShadow geometry={nodes.shoe_1.geometry} material={materials.mesh} />
-      <mesh castShadow receiveShadow geometry={nodes.shoe_2.geometry} material={materials.caps} />
-      <mesh castShadow receiveShadow geometry={nodes.shoe_3.geometry} material={materials.inner} />
-      <mesh castShadow receiveShadow geometry={nodes.shoe_4.geometry} material={materials.sole} />
-      <mesh castShadow receiveShadow geometry={nodes.shoe_5.geometry} material={materials.stripes} />
-      <mesh castShadow receiveShadow geometry={nodes.shoe_6.geometry} material={materials.band} />
-      <mesh castShadow receiveShadow geometry={nodes.shoe_7.geometry} material={materials.patch} />
-    </group>
-  )
+THREE.ColorManagement.legacyMode = false;
+
+async function fetchImages(): Promise<string[]> {
+  const imagesContext = import.meta.glob('/public/images/*.{png,jpg,jpeg,svg}');
+  const imagePaths = Object.keys(imagesContext);
+  const images = await Promise.all(
+    imagePaths.map(async (path) => {
+      const mod = await imagesContext[path]();
+      return mod.default;
+    })
+  );
+  return images;
 }
 
-function App() {
+const App: React.FC = () => {
+  const [images, setImages] = useState<string[]>([]);
+  const [textureUrl, setTextureUrl] = useState<string>('');
+
+  useEffect(() => {
+    fetchImages().then(images => {
+      setImages(images);
+      if (images.length > 0) {
+        setTextureUrl(images[0]);
+      }
+    });
+  }, []);
+
+  const handleChangeTexture = () => {
+    const nextTextureIndex = (images.indexOf(textureUrl) + 1) % images.length;
+    setTextureUrl(images[nextTextureIndex]);
+  };
+
   return (
-    <Canvas camera={{ position: [0.8, 0, 0.1], fov: 25 }} shadows>
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
-      <spotLight />
-      <directionalLight intensity={Math.PI * 1} position={[10, 30, 5]} />
-      <directionalLight intensity={Math.PI * 0.5} position={[-10, 5, 5]} />
-      <directionalLight intensity={Math.PI * 1} position={[10, -25, 10]} />
-      <directionalLight intensity={Math.PI * 1} position={[0, -10, 10]} />
-      <directionalLight intensity={Math.PI * 0.5} position={[10, 25, -10]} />
-      <Suspense fallback={null}>
-        <Model modelUrl='shoe.glb' />
-      </Suspense>
-      <OrbitControls />
-    </Canvas>
+    <>
+      <Canvas 
+        camera={{ position: [0.8, 0, 0.1], fov: 25 }}>
+        <ambientLight />
+        <pointLight position={[10, 10, 10]}/>
+        <directionalLight intensity={Math.PI * 1.5} castShadow/>
+        <ModelComponent modelUrl='shoe.glb' textureUrl={textureUrl} />
+        <OrbitControls />
+      </Canvas>
+      {images.length > 0 && <TextureComponent handleChangeTexture={handleChangeTexture} />}
+      <DownloadComponent modelUrl='shoe.glb' textureUrl={textureUrl} />
+    </>
   );
 }
 
