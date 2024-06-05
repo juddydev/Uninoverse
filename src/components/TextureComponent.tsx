@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface TextureProps {
-    handleChangeTexture: Function;
+    handleChangeTexture: () => void;
 }
 
 const TextureComponent: React.FC<TextureProps> = ({ handleChangeTexture }) => {
