@@ -1,5 +1,4 @@
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
+import React from 'react';
 
 interface DownloadProps {
   modelUrl: string;
@@ -7,20 +6,21 @@ interface DownloadProps {
 }
 
 const DownloadComponent: React.FC<DownloadProps> = ({ modelUrl, textureUrl }) => {
-  const handleDownload = async () => {
-    const zip = new JSZip();
+  const handleDownload = () => {
 
-    const modelResponse = await fetch(modelUrl);
-    const modelBlob = await modelResponse.blob();
-    zip.file('model.glb', modelBlob);
+    const linkModel = document.createElement('a');
+    linkModel.href = modelUrl;
+    linkModel.download = 'model.glb';
+    document.body.appendChild(linkModel);
+    linkModel.click();
+    document.body.removeChild(linkModel);
 
-    const textureResponse = await fetch(textureUrl);
-    const textureBlob = await textureResponse.blob();
-    zip.file(textureUrl.split('/').pop(), textureBlob);
-
-    zip.generateAsync({ type: 'blob' }).then((content) => {
-      saveAs(content, 'model-and-texture.zip');
-    });
+    const linkTexture = document.createElement('a');
+    linkTexture.href = textureUrl;
+    linkTexture.download = textureUrl.split('/').pop();
+    document.body.appendChild(linkTexture);
+    linkTexture.click();
+    document.body.removeChild(linkTexture);
   };
 
   return (
