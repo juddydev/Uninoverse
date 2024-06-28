@@ -13,11 +13,13 @@ const ModelComponent: React.FC<ModelProps> = ({ modelUrl, textureUrl }) => {
   const texture = useLoader(THREE.TextureLoader, textureUrl);
 
   scene.traverse((child) => {
-    if (child.isMesh) {
+    if (child.isMesh && child.name === "upper1") {
+      console.log("yes")
+      console.log("upper1", child)
       child.material.map = texture;
       child.material.map.flipY = false 
       child.material.map.encoding = THREE.sRGBEncoding
-      child.material.needsUpdate = true;
+      child.material.needsUpdate = true;  
     }
   });
 
