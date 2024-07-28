@@ -1,5 +1,9 @@
 # 3d model viewer using r3f
-![Header](public/704_01-.webp "Header")
+
+
+https://github.com/user-attachments/assets/b476a6e7-95ea-44da-ae03-0b52434c0b54
+
+
 This is 3D model viewer using react three fiber
 
 
