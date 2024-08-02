@@ -1,21 +1,32 @@
-import { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import Model from './components/Model'
-import './App.css';
+import MainModel from './components/MainModel'
+import Action from './components/Action'
+import './index.css';
 
-function App() {
+const App: React.FC = () => {
+  const [upperTextureURL, setUpperTextureURL] = useState('/images/texture/703_1upper_1BaseColor.png');
+  const [outsoleTextureURL, setOutsoleTextureURL] = useState('/images/texture/bolangdi_Outsole1_BaseColor_DarkBrown.png');
+
   return (
-    <Canvas shadows camera={{ position: [0, 0, 0.4], fov: 45 }}>
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
-      <directionalLight color={0xffffff} intensity={Math.PI * 1.5} castShadow />
-      <Suspense fallback={null}>
-        <Model />
-      </Suspense>
-      <OrbitControls />
-    </Canvas>
+    <>
+      <div className='w-full h-full'>
+        <Canvas shadows camera={{ position: [0.8, 0, 0.1], fov: 25 }} className=''>
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} />
+          <directionalLight color={0xffffff} intensity={1.5} castShadow />
+          <directionalLight color={0xffffff} intensity={1.5} castShadow position={[10, -25, 10]}/>
+          <Suspense fallback={null}>
+              <MainModel upperTextureURL={upperTextureURL} outsoleTextureURL={outsoleTextureURL}/>
+          </Suspense>
+          <OrbitControls />
+        </Canvas>
+        <Action setUpperTextureURL={setUpperTextureURL} setOutsoleTextureURL={setOutsoleTextureURL}/>
+      </div>
+    </>
   );
 }
 
 export default App;
+
