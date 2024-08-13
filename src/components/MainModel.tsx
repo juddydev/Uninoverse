@@ -152,12 +152,6 @@ export default function MainModel({ upperTextureURL, outsoleTextureURL, ...props
           geometry={nodes.upper8.geometry}
           material={upperMat}
         />
-        {/* <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.polySurface4.geometry}
-          material={soleMat}
-        /> */}
         <mesh
           castShadow
           receiveShadow
