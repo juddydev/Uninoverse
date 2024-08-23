@@ -164,13 +164,6 @@ export default function MainModel({ upperTextureURL, outsoleTextureURL, ...props
           geometry={nodes.bolangdi_tiepian2.geometry}
           material={bolangdiOutSoleMat}
         />
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.quanpidi_Outsole_.geometry}
-          material={quanMat}
-          rotation={[-Math.PI / 2, 0, 0]}
-        />
       </group>
     </group>
   );
