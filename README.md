@@ -34,8 +34,6 @@ $ bun run build
 $ bun run dev
 ```
 
-## Setup for using Customer Account API (`/account` section)
-
 ### Setup public domain using ngrok
 
 1. Setup a [ngrok](https://ngrok.com/) account and add a permanent domain (ie.
